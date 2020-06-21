@@ -10,33 +10,42 @@ function App() {
       setRepositories(response.data)
     })
 
-  }, [repositories]);
+  }, []);
 
 
   async function handleAddRepository() {
-    const newRepo = {
-      title: "REPO Blockchain - FrontEnd React",
-      url: "https://github.com.br/API",
-      techs: ["Blockchains", "hyperledger", "ethereum"]
-    };
 
-    const response = await api.post("repositories", newRepo);
+    const response = await api.post("repositories",
+      {
+        title: "REPO Blockchain - FrontEnd React",
+        url: "https://github.com.br/API",
+        techs: ["Blockchains", "hyperledger", "ethereum"]
+      }
+    );
 
-    setRepositories([...repositories, response.data]);
+    const repository = response.data
+
+    setRepositories([...repositories, repository]);
   }
 
   async function handleRemoveRepository(id) {
-    api.delete(`repositories/${id}`);
+
+    await api.delete(`repositories/${id}`);
+
+    setRepositories(repositories.filter(item => item.id !== id))
 
   }
 
   return (
     <div>
       <ul data-testid="repository-list">
-        {repositories.map(repo =>
-          <li key={repo.id}>
-            {repo.title}<button onClick={() => handleRemoveRepository(repo.id)}>Remover</button>
-          </li>
+        {repositories.map(repo => {
+          return (
+            <li key={repo.id}>
+              {repo.title}<button onClick={() => handleRemoveRepository(repo.id)}>Remover</button>
+            </li>
+          )
+        }
         )}
       </ul>
 
